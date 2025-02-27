@@ -1,0 +1,96 @@
+from tkinter import *
+from PIL import ImageTk
+from LOGIN import username
+from tkinter import messagebox
+import smtplib
+
+def send_mail():
+    server = smtplib.SMTP('smtp.gmail.com',587)
+    server.ehlo()
+    server.starttls()
+
+    server.login(email1Entry.get() , passwordEntry.get())
+
+    server.sendmail(email1Entry.get(), email2Entry.get(), typemsgEntry.get())
+    print('mail sent')
+
+
+HomePage=Tk()
+HomePage.resizable(0,0)
+HomePage.title('Home Page')
+
+homepageImage=ImageTk.PhotoImage(file='hp.jpg')
+homepageLabel=Label(HomePage,image=homepageImage)
+homepageLabel.grid(row=0,column=0)
+
+heading=Label(HomePage,text='WELCOME TO HOME PAGE',justify="center", font=('Roboto',15,'bold'),bg='white',fg='firebrick1')
+heading.place(x=198,y=55)
+
+usericon=PhotoImage(file='usericon.png')
+iconButton=Button(HomePage,image=usericon,bd=0,bg='white',activebackground='white',cursor='hand2')
+iconButton.place(x= 300,y=85)
+
+user_name1=Label(HomePage,text='Hi', font=('Roboto',13,'italic'),bg='white',fg='black')
+user_name1.place(x= 280,y=135)
+
+user_name2=Label(HomePage,text='username', font=('Roboto',13,'italic'),bg='white',fg='black')
+user_name2.place(x= 300,y=135)
+
+heading=Label(HomePage,text='SEND A MAIL', font=('Roboto',11,'bold'),bg='white',fg='black')
+heading.place(x= 280,y=165)
+
+email1=Label(HomePage,text='From:',font=('Helvetica',10,'bold'),bg='white',fg='black')
+email1.place(x=180,y=195)
+
+email1Entry=Entry(HomePage,width=32,font=('Times New Roman',10),relief="ridge",bg='light blue',fg='black')
+email1Entry.place(x=248,y=195)
+
+password=Label(HomePage,text='Password:',font=('Helvetica',10,'bold'),bg='white',fg='black')
+password.place(x=180,y=225)
+
+passwordEntry=Entry(HomePage,width=32,font=('Times New Roman',10),relief="ridge",bg='light blue',fg='black')
+passwordEntry.place(x=248,y=225)
+
+email2=Label(HomePage,text='To:',font=('Helvetica',10,'bold'),bg='white',fg='black')
+email2.place(x=180,y=255)
+
+email2Entry=Entry(HomePage,width=32,font=('Times New Roman',10),relief="ridge",bg='light blue',fg='black')
+email2Entry.place(x=248,y=255)
+
+type_msg=Label(HomePage,text='Message:',font=('Helvetica',10,'bold'),bg='white',fg='black')
+type_msg.place(x=180,y=285)
+
+typemsgEntry=Entry(HomePage,width=32,font=('Times New Roman',10),relief="ridge",bg='light blue',fg='black')
+typemsgEntry.place(x=248,y=285,height=65)
+
+verify=Button(HomePage,text='SEND',bd=0,bg='red',fg='white',cursor='hand2',command=send_mail)
+verify.place(x= 340,y=355)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
