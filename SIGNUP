@@ -1,0 +1,151 @@
+from tkinter import *
+from PIL import ImageTk
+from tkinter import messagebox
+import random
+import sqlite3
+
+def proceed():
+    SignUp.destroy()
+    import LOGIN
+    
+
+def gen_username():
+    name=nameEntry.get()
+    index1=name.find(' ')
+    f=name[0]
+    l=name[(index1+1):(index1+5)]
+    r=random.randrange(0,100)
+    global username
+    username=l+f+str(r)
+    messagebox.showinfo('Success','Username generated')
+    
+    show_username=Label(SignUp,text='Your username is:',font=('Times New Roman',15,'bold'),bg='white',fg='dark green')
+    show_username.place(x=195,y=360)
+    
+    display_username=Label(SignUp,text=username ,font=('Times New Roman',15,'bold'),bg='white',fg='black')
+    display_username.place(x=350,y=360)
+
+    nextButton=Button(SignUp,text='Proceed',font=('Microsoft Yahei UI Light',10,'bold'),bg='dark blue',fg='white',command=proceed)
+    nextButton.place(x=325,y=290)
+
+def clear():
+    emailEntry.delete(0,'end')
+    nameEntry.delete(0,'end')
+    pEntry.delete(0,'end')
+    cpEntry.delete(0,'end')
+    check.set(0)
+
+def submit():
+    email=emailEntry.get()
+    name=nameEntry.get()
+    passw=pEntry.get()
+    if emailEntry.get()=='' or nameEntry.get()=='' or pEntry.get()=='' or cpEntry.get()=='':
+        messagebox.showerror('ERROR','All fields are required!!')
+
+    elif pEntry.get()!= cpEntry.get():
+        messagebox.showerror('ERROR', 'Password mismatched!')
+
+    elif check.get()==0:
+        messagebox.showerror('ERROR', 'Please accept terms and conditions!')
+
+    else:
+        try:
+            con=sqlite3.connect("userinfo.db")
+            mycursor=con.cursor()
+            
+        except:
+            messagebox.showerror('ERROR', 'Database connectivity issue. Please try again!')
+            return
+       
+        gen_username()
+        mycursor.execute("create table if not exists signup(email varchar(80) PRIMARY KEY , Name text,username varchar, password varchar(20))")
+        print("Table created")
+        
+        q="insert into signup(email, Name,username, password) values (?,?,?,?)"
+        v=(email,name,passw,username)
+        mycursor.execute(q,v)
+        
+
+        print("RECORD INSERTED!!")
+
+        n=mycursor.execute("select * from signup")
+        for row in n:
+                           print(row)
+        mycursor.execute("create table if not exists login(username varchar(20) PRIMARY KEY, password varchar(50))")
+        query="insert into login(username,password) values (?,?)"
+        val=(username,passw)
+        mycursor.execute(query,val)
+
+        
+        con.commit()
+        con.close()
+        messagebox.showinfo('Success', 'Signed Up successfully!!')
+        clear()
+        
+
+def email_enter(event):
+    emailEntry.delete(0,'end')
+    
+def name_enter(event):
+    nameEntry.delete(0,'end')
+
+def p_enter(event):
+    pEntry.delete(0,'end')
+
+def cp_enter(event):
+    cpEntry.delete(0,'end')
+
+def login_page():
+    SignUp.destroy()
+    import LOGIN
+    
+SignUp=Tk()
+SignUp.resizable(0,0)
+SignUp.title('SignUp Page')
+
+signupImage=ImageTk.PhotoImage(file='signupimg.jpg')
+
+signupLabel=Label(SignUp,image=signupImage)
+signupLabel.grid(row=0,column=0)
+
+heading=Label(SignUp,text='CREATE AN ACCOUNT',font=('Times New Roman',19,'bold'),bg='white',fg='dark blue')
+heading.place(x=175,y=40)
+
+emailEntry=Entry(SignUp,font=('Times New Roman',15),width=23,relief="ridge",bg='light blue',fg='black')
+emailEntry.place(x=195,y=100)
+emailEntry.insert(0,'Email')
+
+
+nameEntry=Entry(SignUp,font=('Times New Roman',15),width=23,relief="ridge",bg='light blue',fg='black')
+nameEntry.place(x=195,y=140)
+nameEntry.insert(0,'Name')
+
+pEntry=Entry(SignUp,font=('Times New Roman',15),width=23,relief="ridge",bg='light blue',fg='black')
+pEntry.place(x=195,y=180)
+pEntry.insert(0,'Password')
+
+cpEntry=Entry(SignUp,font=('Times New Roman',15),width=23,relief="ridge",bg='light blue',fg='black')
+cpEntry.place(x=195,y=220)
+cpEntry.insert(0,'Confirm Password')
+
+
+emailEntry.bind('<FocusIn>',email_enter)
+nameEntry.bind('<FocusIn>',name_enter)
+pEntry.bind('<FocusIn>',p_enter)
+cpEntry.bind('<FocusIn>',cp_enter)
+
+check=IntVar()
+tac=Checkbutton(SignUp,text='I agree to the Terms & Conditions',variable=check,font=('Microsoft Yahei UI Light',8),fg='black',bg='white',cursor='hand2')
+tac.place(x=195,y=260)
+
+signupButton=Button(SignUp,text='SIGN UP',font=('Microsoft Yahei UI Light',10,'bold'),bg='dark blue',fg='white',command=submit)
+signupButton.place(x=225,y=290)
+
+alacc=Label(SignUp,text='Already have an account?',font=('Open Sans',8,'bold'),bg='white',fg='black')
+alacc.place(x=195,y=325)
+
+loginButton=Button(SignUp,text='Log In',font=('Open Sans',8),cursor='hand2',bd=0,bg='white',fg='firebrick1',command=login_page)
+loginButton.place(x=340,y=325)
+
+
+SignUp.mainloop()
