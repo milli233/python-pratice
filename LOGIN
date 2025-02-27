@@ -1,0 +1,97 @@
+from tkinter import *
+from PIL import ImageTk
+from tkinter import messagebox
+import sqlite3
+
+def login():
+    global username
+    username=userEntry.get()
+    passw=passEntry.get()
+
+    if userEntry.get()=='' or passEntry.get()=='':
+        messagebox.showerror('ERROR','All fields are required!!')
+
+    else:
+        try:
+            con=sqlite3.connect("userinfo.db")
+            mycursor=con.cursor()
+
+        except:
+            messagebox.showerror('ERROR', 'Connection is not established. Please try again!')
+            return
+
+       
+        query="select * from login where username=(?) and password=(?)"
+        mycursor.execute(query,(username,passw))
+        row= mycursor.fetchone()
+        if row==None:
+            messagebox.showerror('Error','Invalid username or password')
+        else:
+            messagebox.showinfo('Welcome','Login is successful')
+            root.destroy()
+            import HOMEPAGE
+        con.commit()
+        con.close()
+       
+
+def user_enter(event):
+    userEntry.delete(0,'end')
+
+def pass_enter(event):
+    passEntry.delete(0,'end')
+
+def hide():
+    openeye.config(file='closeeye.png')
+    passEntry.config(show='*')
+    eyeButton.config(command=show)
+
+def show():
+    openeye.config(file='eye.png')
+    passEntry.config(show='')
+    eyeButton.config(command=hide)
+
+def signup():
+    root.destroy()
+    import SIGNUP
+    
+root=Tk()
+root.resizable(0,0)   #disable maximize button
+root.title('Login Page')
+
+bgImage=ImageTk.PhotoImage(file='bgimg.jpg')
+
+bgLabel=Label(root,image=bgImage)
+bgLabel.grid(row=0,column=0)
+
+heading=Label(root,text='USER LOGIN',font=('Helvetica',20,'bold'),fg='dark blue')
+heading.place(x=420,y=90)
+
+userEntry=Entry(root,width=27,font=('Times New Roman',15),relief="ridge",fg='black')
+userEntry.place(x=370,y=190)
+userEntry.insert(0,'Username')
+
+passEntry=Entry(root,width=27,font=('Times New Roman',15),relief="ridge",fg='black')
+passEntry.place(x=370,y=240)
+passEntry.insert(0,'Password')
+
+userEntry.bind('<FocusIn>',user_enter)
+passEntry.bind('<FocusIn>',pass_enter)
+
+openeye=PhotoImage(file='eye.png')
+eyeButton=Button(root,image=openeye,bd=0,bg='white',activebackground='white',cursor='hand2',command=hide)
+eyeButton.place(x=620,y=240)
+
+forgetButton=Button(root,text='Forgot Password?',bd=0,bg='white',fg='firebrick1',cursor='hand2')
+forgetButton.place(x=540,y=280)
+
+loginButton=Button(root,text='Login',font=('Open Sans',13,'bold'),command=login,cursor='hand2',bd=0,width=10,fg='white',bg='dark blue')
+loginButton.place(x=460,y=330)
+
+slabel=Label(root,text="Don't have an account?",font=('Times New Roman',10),bg='white',fg='black')
+slabel.place(x=420,y=370)
+
+signupButton=Button(root,text='Sign Up',font=('Times New Roman',10),bd=0,bg='white',fg='firebrick1',cursor='hand2',command=signup)
+signupButton.place(x=553,y=370)
+
+
+root.mainloop()
