@@ -33,7 +33,7 @@ iconButton.place(x= 300,y=85)
 user_name1=Label(HomePage,text='Hi', font=('Roboto',13,'italic'),bg='white',fg='black')
 user_name1.place(x= 280,y=135)
 
-user_name2=Label(HomePage,text='username', font=('Roboto',13,'italic'),bg='white',fg='black')
+user_name2=Label(HomePage,text=username, font=('Roboto',13,'italic'),bg='white',fg='black')
 user_name2.place(x= 300,y=135)
 
 heading=Label(HomePage,text='SEND A MAIL', font=('Roboto',11,'bold'),bg='white',fg='black')
